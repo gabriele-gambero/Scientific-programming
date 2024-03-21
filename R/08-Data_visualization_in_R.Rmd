@@ -1,0 +1,23 @@
+---
+title: "08-Data_Visualisation"
+author: "gigi"
+date: '2023-05-02'
+output: html_document
+---
+```{r}
+library(rtools)
+```
+
+```{r}
+install.packages('GEOquery')
+```
+
+```{r}
+library(GEOquery)
+gse102484 <- getGEO('GSE102484',GSEMatrix=TRUE)
+```
+```{r}
+BiocManager::install('GEOquery')
+```
+
+

@@ -1,0 +1,184 @@
+---
+title: "Untitled"
+author: "gigi"
+date: '2023-04-19'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the 
+
+
+
+
+
+
+
+
+```{r}
+library(BiocManager)
+library(tidyverse)
+library(Biostrings)
+```
+
+
+
+
+# EXERCISE 1 
+
+Use the Biostrings package to load the SARS-Cov2 genome sequences.
+• Whats the average length of the genome sequences of the novel coronavirus? What’s its median
+length? (It’s sad how much trouble such few basepairs can cause …)
+• Get the list of sequence names from the DNAStringSet object
+• Extract the sequences (character strings) of the first three genomes in the set (using one single
+command, no loop)
+
+```{r}
+fastafile <- "SARS2_NCBIVirus_complete_genomes_20200329.fasta"
+seqset <- readDNAStringSet(fastafile)
+
+```
+
+```{r}
+mean(width(seqset))
+```
+
+```{r}
+median(width(seqset))
+```
+
+```{r}
+?DNAStringSet
+```
+
+?DNAStringSet
+
+```{r}
+names(seqset)
+```
+
+```{r}
+seqset[1:3]
+```
+```{r}
+as.character(seqset[1:3])
+```
+This solution is better cause it's way faster!
+
+
+
+____________
+# EXERCISE 2
+
+Use the ShortRead package to load the NGS reads from the file SP1.fq (provided in BeeP).
+• Extract the sequences (character strings) of the first three reads (using one single command!)
+
+```{r}
+BiocManager::install("ShortRead")
+```
+```{r}
+library(ShortRead)
+reads <- readFastq("SP1.fq")
+```
+
+```{r}
+as.character(sread(reads[1:3]))
+
+```
+
+```{r}
+sread(reads[1:3])
+```
+
+• Extract the base qualities (as character strings) for the first three reads (one command!).
+
+```{r}
+as.character(quality(reads[1:3])@quality)
+```
+
+
+Hint: you will have to access the quality data field of the object returned by the qualityfunction
+…
+
+• Produce the HTML quality assessment report for this read set and have a look at it. (Please be aware that many of the plots do not look like what you would expect from a larger and more modern data set!).
+
+```{r}
+qaSummary <- qa("SP1.fq", type="fastq")
+browseURL(report(qaSummary))
+```
+
+
+• Have a look at the ShortRead vignette at
+http://bioconductor.org/packages/release/bioc/vignettes/ShortRead/inst/doc/Overview.pdf
+• The Vignette describes a larger test data set (20,000 reads, 72 bases each): E-MTAB-1147, file
+"ERR127302_1_subset.fastq.gz". Load the data and produce the HTML quality assessment
+report.
+• Verify in a single command that all reads do have precisely 72 bases length. Hint: get the
+corresponding DNAStringSet and use functions width and unique. Another possible
+approach, based on logical comparison, can be implemented with the function all.
+• Read Section 3.2 (Filtering and Trimming) of the vignette. Do you have an idea of what is
+happening here? Apply this to the 20,000 reads from the E-MTAB-1147 example data. If you
+have already loaded it, you can apply the single filtering and trimming steps directly to the
+loaded dataset and do not need to re-load it in chunks as described in Section 3.2. Questions:
+◦ How many reads are left after filtering and trimming?
+◦ Do they all have the same length (72 bases)? If not, what range of lengths/widths do they
+have?
+◦ If you want to visualize the distribution of lengths, you can use the function hist on the
+width/length vector.
+
+
+# EXERCISE 3
+
+Read the BAM file ex1.bam provided as an example with the Rsamtools package.
+• Transform the read data to a DataFrame. Check whether the DataFrame has row names.
+
+```{r}
+library(Rsamtools)
+```
+
+```{r}
+bamFile <- system.file("extdata", "ex1.bam", package="Rsamtools")
+bam <- scanBam(bamFile)
+```
+
+```{r}
+bamdf <- DataFrame(bam[[1]])
+rownames(bamdf)
+```
+
+• Transform the read data to a data.frame and check for row names, too.
+```{r}
+as.data.frame(bam)
+# row.names.data.frame(bam)   Don't know what that is, try to understand it
+rownames(as.data.frame(bam))
+```
+
+
+
+
+
+
+
+
+
